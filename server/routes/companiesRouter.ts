@@ -1,5 +1,6 @@
-import { addCompany, addCompanyRequestSchema, addResponseSchema } from '../controllers/companiesControllers';
+import { addCompany, addCompanyRequestSchema } from '../controllers/companiesControllers';
 import { initTRPC } from '@trpc/server';
+import { mutationResponse } from '../utils/commonSchemas';
 
 const t = initTRPC.create();
  
@@ -9,6 +10,6 @@ export const publicProcedure = t.procedure;
 export const companiesRouter = router({
     addCompany: publicProcedure
         .input(addCompanyRequestSchema)
-        .output(addResponseSchema)
+        .output(mutationResponse)
         .mutation(async ({input}) => addCompany({input}))
 })

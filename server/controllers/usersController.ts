@@ -1,6 +1,7 @@
 import {z} from 'zod'
 import { prisma } from '../index';
 import status from 'http-status'
+import { deletionRequest } from '../utils/commonSchemas';
 
 export const addResponseSchema = z.object({
     success: z.boolean(),
@@ -34,3 +35,16 @@ export const addUser = async ({input}: {input: z.infer<typeof addUserRequestSche
         success: true
     };
 }
+
+export const deleteUser = async ({input}: {input: z.infer<typeof deletionRequest>}) => {
+    const {id} = input;
+    await prisma.user.delete({
+      where: {
+        id: id
+      }
+    })
+  
+    return({
+      success: true
+    })
+  }

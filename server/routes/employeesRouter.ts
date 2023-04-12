@@ -1,5 +1,12 @@
 import { initTRPC } from '@trpc/server';
-import { addEmployee, addEmployeeRequestSchema, addResponseSchema } from '../controllers/employeesController';
+import { addEmployee, addEmployeeRequestSchema, 
+    getEmployeesInfo, 
+    getEmployeesResponseScheme, getInfoRequest, 
+    getLastAdded, getLastResponseScheme, getEmployeeRequest, 
+    getEmployeeResponse, 
+    getEmployeeInfo,
+    deleteEmployee} from '../controllers/employeesController';
+import { deletionRequest, mutationResponse } from '../utils/commonSchemas';
 
 const t = initTRPC.create();
  
@@ -9,6 +16,21 @@ export const publicProcedure = t.procedure;
 export const employeesRouter = router({
     addEmployee: publicProcedure
         .input(addEmployeeRequestSchema)
-        .output(addResponseSchema)
-        .mutation(async ({input}) => addEmployee({input}))
+        .output(mutationResponse)
+        .mutation(async ({input}) => addEmployee({input})),
+    getLastEmployees: publicProcedure
+        .output(getLastResponseScheme)
+        .query(() => getLastAdded()),
+    getEmployeesInfo: publicProcedure
+        .input(getInfoRequest)
+        .output(getEmployeesResponseScheme)
+        .query(({input}) => getEmployeesInfo({input})),
+    getEmployeeInfo: publicProcedure
+        .input(getEmployeeRequest)
+        .output(getEmployeeResponse)
+        .query(({input}) => getEmployeeInfo({input})),
+    deleteEmployee: publicProcedure
+        .input(deletionRequest)
+        .output(mutationResponse)
+        .mutation(({input}) => deleteEmployee({input}))
 })
