@@ -2,6 +2,7 @@ import { z } from "zod";
 import { prisma } from '../index';
 import status from 'http-status'
 import { deletionRequest } from "../utils/commonSchemas";
+import { TRPCError } from "@trpc/server";
 
 export const addEmployeeRequestSchema = z.object({
     firstName: z.string(),
@@ -16,9 +17,10 @@ export const addResponseSchema = z.object({
 });
 
 export const getLastResponseScheme = z.array(z.object({
+  id: z.number(),
   firstName: z.string(),
   lastName: z.string(),
-  createdAt: z.date()
+  createdAt: z.string()
 }));
 
 export const getEmployeesResponseScheme = z.array(z.object({
@@ -67,19 +69,19 @@ export const addEmployee = async ({input}: {input: z.infer<typeof addEmployeeReq
 
       // Throw an error if department doesn't exist
       if (!department) {
-        throw {
-          status: status[500],
-          message: 'Department not found',
-        };
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: "Department not found!"
+        })
       };
 
       const user = await prisma.user.findUnique({where: {username: username}});
 
       if (!user){
-        throw {
-          status: status[500],
-          message: "User doesn't exist"
-        }
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: "User doesn't exist!"
+        })
       };
 
       // Check if the department already has a head
@@ -126,9 +128,10 @@ export const getLastAdded = async () => {
   });
 
   return last.map(emp => ({
+    id: emp.id,
     firstName: emp.firstName,
     lastName: emp.lastName,
-    createdAt: emp.createdAt
+    createdAt: String(emp.createdAt)
   }))
 }
 
@@ -189,10 +192,10 @@ export const getEmployeeInfo = async ({input}: {input: z.infer<typeof getEmploye
   });
 
   if (!employee){
-    throw {
-      status: status[500],
-      message: "No such employee!"
-    }
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: "Employee not found!"
+    })
   };
 
   return {

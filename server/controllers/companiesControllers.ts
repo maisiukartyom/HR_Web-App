@@ -1,6 +1,7 @@
 import {z} from 'zod';
 import { prisma } from '../index';
 import status from 'http-status';
+import { TRPCError } from '@trpc/server';
 
 export const addResponseSchema = z.object({
     success: z.boolean(),
@@ -15,10 +16,10 @@ export const addCompany = async ({input}: {input: z.infer<typeof addCompanyReque
       const tmp = await prisma.company.findUnique({ where: { name: name } });
 
       if (tmp){
-        throw {
-          status: status[500],
-          message: 'Company already exists!',
-        };
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: "Such company already exists!"
+        })
       };
       // Create the new company
       const company = await prisma.company.create({ data: { name } });
