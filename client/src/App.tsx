@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { trpc } from './utils/trpc';
 import {BrowserRouter, Link, Route, Routes} from 'react-router-dom'
 import Home from './pages/Home';
@@ -12,10 +12,14 @@ import { Departments } from './pages/Departments';
 import { Employees } from './pages/Employees';
 import { Employee } from './pages/Employee';
 import { Login } from './pages/Login';
-// import { UserProvider } from './context/userContext';
+import { UserContext } from './context/userContext';
+import { Register } from './pages/Register';
 
 
 const AppContent = () => {
+
+  const {user} = useContext(UserContext);
+
   return (
     <>
       <BrowserRouter>
@@ -26,17 +30,22 @@ const AppContent = () => {
               <Nav.Link as={Link} to="/employees">Employees</Nav.Link>
                 <Nav.Link as={Link} to="/departments">Departments</Nav.Link>
                 <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
-                <Nav.Link as={Link} to="/login">Profile</Nav.Link>
+                <Nav.Link as={Link} to="/login">Login/Register</Nav.Link>
               </Nav>
             </Container>
           </Navbar>
           <Routes>
-            <Route path='/' element={<Home />}/>
-            <Route path='/department/:id' element={<Department />}/>
-            <Route path='/departments' element={<Departments />}/>
-            <Route path='/employees' element={<Employees />}/>
-            <Route path='/employee/:id' element={<Employee />}/>
-            <Route path='/login' element={<Login />}/>
+            { user &&
+              <>
+                <Route path='/' element={<Home />}/>
+                <Route path='/department/:id' element={<Department />}/>
+                <Route path='/departments' element={<Departments />}/>
+                <Route path='/employees' element={<Employees />}/>
+                <Route path='/employee/:id' element={<Employee />}/>
+              </>
+            }     
+                <Route path='/login' element={<Login />}/>
+                <Route path='/register' element={<Register />}/>
           </Routes>
         </BrowserRouter>
     </>  
