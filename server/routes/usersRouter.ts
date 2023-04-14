@@ -1,5 +1,5 @@
 import { initTRPC } from '@trpc/server';
-import { addUser, addUserRequestSchema, deleteUser } from '../controllers/usersController';
+import { addUser, addUserRequestSchema, deleteUser, loginRequest, loginResponse, Login } from '../controllers/usersController';
 import { deletionRequest, mutationResponse } from '../utils/commonSchemas';
 
 const t = initTRPC.create();
@@ -15,5 +15,9 @@ export const usersRouter = router({
     deleteUser: publicProcedure
         .input(deletionRequest)
         .output(mutationResponse)
-        .mutation(({input}) => deleteUser({input}))
+        .mutation(({input}) => deleteUser({input})),
+    login: publicProcedure
+        .input(loginRequest)
+        .output(loginResponse)
+        .mutation(({input}) => Login({input}))
 })

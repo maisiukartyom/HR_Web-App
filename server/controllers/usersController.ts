@@ -13,6 +13,16 @@ export const addUserRequestSchema = z.object({
     password: z.string(),
   });
 
+export const loginRequest = z.object({
+  username: z.string(),
+  password: z.string()
+})
+
+export const loginResponse = z.object({
+  id: z.number(),
+  username: z.string(),
+})
+
 export const addUser = async ({input}: {input: z.infer<typeof addUserRequestSchema>}) => {
     const { username, password } = input;
 
@@ -49,3 +59,26 @@ export const deleteUser = async ({input}: {input: z.infer<typeof deletionRequest
       success: true
     })
   }
+
+export const Login = async ({input}: {input: z.infer<typeof loginRequest>}) => {
+  const {username, password} = input;
+  const user = await prisma.user.findFirst({
+    where: {
+      username: username,
+      password: password,
+    },
+    select: {
+      id: true, 
+      username: true
+    }
+  });
+
+  if (!user){
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: "User doesn't exist!"
+    })
+  }
+  
+  return user;
+}

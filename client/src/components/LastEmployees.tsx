@@ -15,7 +15,7 @@ export const LastEmployees: React.FC = () => {
 
     return (
         <div>
-          <h1>Recently Added Employees</h1>
+          <h1>5 Recently Added Employees</h1>
           {isSuccess &&
           <Table striped bordered hover>
             <thead>

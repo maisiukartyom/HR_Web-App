@@ -17,7 +17,7 @@ export const TopDepartments: React.FC = () => {
 
     return (
         <div>
-          <h1>Top departments</h1>
+          <h1>Top 5 departments</h1>
           {isSuccess && <Table striped bordered hover>
             <thead>
               <tr>

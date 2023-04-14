@@ -7,14 +7,20 @@ import { EmployeesList } from '../components/EmployeesList';
 export const Department: React.FC = () => {
     const location = useLocation()
     const id = location.pathname.split("/")[2];
-    const {data: departmentInfo, isSuccess} = trpc.getDepartmentInfo.useQuery({id: +id}); 
-    const {data: employees, isLoading} = trpc.getDepEmployees.useQuery({id: +id});
+    const {data: departmentInfo, refetch: ref1, isSuccess} = trpc.getDepartmentInfo.useQuery({id: +id}); 
+    const {data: employees, refetch: ref2, isLoading} = trpc.getDepEmployees.useQuery({id: +id});
+
+    const refetchData = () => {
+      ref1();
+      ref2();
+    }
 
     return (
         <div >
           <h1>Department Information</h1>
           {isSuccess && (
-            <Card style={{ width: '18rem' }}>
+            <div>
+              <Card style={{ width: '18rem' }}>
               <Card.Body>
                 <Card.Title>{departmentInfo.name}</Card.Title>
                 <Card.Text>
@@ -28,9 +34,12 @@ export const Department: React.FC = () => {
                   Creation Date: {departmentInfo.creationDate}
                 </Card.Text>
               </Card.Body>
-            </Card>
+              </Card>
+              <EmployeesList style={{ maxWidth: "70%", margin: "0 auto" }} employees={employees} 
+              refetch={refetchData} isLoading={isLoading} depName={departmentInfo.name}/>
+            </div>
           )}
-          <EmployeesList style={{ maxWidth: "70%", margin: "0 auto" }} employees={employees} isLoading={isLoading}/>
+          
         </div>
       );
 };

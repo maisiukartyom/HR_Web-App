@@ -52,7 +52,7 @@ export const getEmployeeResponse = z.object({
   lastName: z.string(),
   position: z.string(),
   isHead: z.boolean(),
-  createdAt: z.date(),
+  createdAt: z.string(),
   department: z.object({
     id: z.number(),
     name: z.string(),
@@ -209,7 +209,7 @@ export const getEmployeeInfo = async ({input}: {input: z.infer<typeof getEmploye
     lastName: employee.lastName,
     position: employee.position,
     isHead: employee.isHead,
-    createdAt: employee.createdAt,
+    createdAt: String(employee.createdAt),
     department: {
       id: employee.department.id,
       name: employee.department.name
