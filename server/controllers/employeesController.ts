@@ -31,7 +31,7 @@ export const getEmployeesResponseScheme = z.array(z.object({
   // departmentId: employee.departmentId,
   // userId: employee.userId,
   isHead: z.boolean(),
-  createdAt: z.date(),
+  createdAt: z.string(),
   company: z.object({
     id: z.number(),
     name: z.string(),
@@ -58,6 +58,11 @@ export const getEmployeeResponse = z.object({
     name: z.string(),
   }),
 });
+
+export const getDepEmployeeRequest = z.object({
+  id: z.number()
+})
+
 
 
 
@@ -165,7 +170,7 @@ export const getEmployeesInfo = async ({input}: {input: z.infer<typeof getInfoRe
       // departmentId: employee.departmentId,
       // userId: employee.userId,
       isHead: employee.isHead,
-      createdAt: employee.createdAt,
+      createdAt: String(employee.createdAt),
       company: {
         id: employee.department.companyId,
         name: employee.department.company.name,
@@ -223,5 +228,47 @@ export const deleteEmployee = async ({input}: {input: z.infer<typeof deletionReq
   return({
     success: true
   })
+}
+
+export const getDepEmployees = async ({input}: {input: z.infer<typeof getDepEmployeeRequest>}) => {
+  const {id} = input;
+  const employees = await prisma.employee.findMany({
+    where: {
+      departmentId: id
+    },
+    orderBy: { firstName: "asc" },
+    include: {
+      department: {
+        select: {
+          id: true,
+          name: true,
+          companyId: true,
+          company: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return employees.map((employee) => {
+    return {
+      id: employee.id,
+      firstName: employee.firstName,
+      lastName: employee.lastName,
+      // position: employee.position,
+      // departmentId: employee.departmentId,
+      // userId: employee.userId,
+      isHead: employee.isHead,
+      createdAt: String(employee.createdAt),
+      company: {
+        id: employee.department.companyId,
+        name: employee.department.company.name,
+      },
+    };
+  });
 }
   

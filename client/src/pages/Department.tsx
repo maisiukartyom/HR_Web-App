@@ -1,17 +1,17 @@
 import { Card } from 'react-bootstrap';
 import { trpc } from '../utils/trpc';
 import { useLocation } from 'react-router-dom';
+import { EmployeesList } from '../components/EmployeesList';
 
 
 export const Department: React.FC = () => {
     const location = useLocation()
-    const id = location.pathname.split("/")[2]
-    //const [topDepartments, setTopDepartments] = useState<Department[]>([]);
-    //const [loading, setLoading] = useState<boolean>(true);
+    const id = location.pathname.split("/")[2];
     const {data: departmentInfo, isSuccess} = trpc.getDepartmentInfo.useQuery({id: +id}); 
+    const {data: employees, isLoading} = trpc.getDepEmployees.useQuery({id: +id});
 
     return (
-        <div>
+        <div >
           <h1>Department Information</h1>
           {isSuccess && (
             <Card style={{ width: '18rem' }}>
@@ -30,6 +30,7 @@ export const Department: React.FC = () => {
               </Card.Body>
             </Card>
           )}
+          <EmployeesList style={{ maxWidth: "70%", margin: "0 auto" }} employees={employees} isLoading={isLoading}/>
         </div>
       );
 };

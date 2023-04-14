@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button, Form, Modal, Table } from "react-bootstrap";
 import { trpc } from "../utils/trpc";
+import { Link } from "react-router-dom";
 
 type Department = {
     id: number,
@@ -43,7 +44,7 @@ export const Departments: React.FC = () => {
     };
 
     return (
-        <div>
+        <div style={{ maxWidth: "70%", margin: "0 auto" }}>
           <h1>Department Management</h1>
           <Button variant="primary" onClick={() => setShowAddModal(true)}>
             Add Department
@@ -61,7 +62,7 @@ export const Departments: React.FC = () => {
             <tbody>
               {departments?.map((department: Department) => (
                 <tr key={department.id}>
-                  <td>{department.name}</td>
+                  <td><Link to={`/department/${department.id}`} style={{ textDecoration: 'none' }}>{department.name}</Link></td>
                   <td>{department.employeeCount}</td>
                   <td>{department.headOfDepartment? (`${department.headOfDepartment?.firstName} ${department.headOfDepartment?.lastName}`) : "-"}</td>
                   <td>{department.creationDate}</td>

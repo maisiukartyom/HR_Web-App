@@ -29,7 +29,7 @@ export const TopDepartments: React.FC = () => {
               {depData.map((department: Department) => (
                 <tr key={department.id}>
                   <td>{department.count}</td>
-                  <td><Link to={`/department/${department.id}`}>{department.name}</Link></td>
+                  <td><Link style={{ textDecoration: 'none' }} to={`/department/${department.id}`} >{department.name}</Link></td>
                 </tr>
               ))}
             </tbody>
