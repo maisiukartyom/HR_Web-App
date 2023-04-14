@@ -8,7 +8,7 @@ import Navbar from 'react-bootstrap/Navbar';
 
 const HomePage: React.FC = () => {
     return (
-      <div>
+      <div style={{ maxWidth: "70%", margin: "0 auto" }}>
         <TopDepartments />
         <LastEmployees />
       </div>
