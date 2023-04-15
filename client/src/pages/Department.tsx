@@ -16,10 +16,10 @@ export const Department: React.FC = () => {
     }
 
     return (
-        <div >
+        <div style={{margin: "0 auto"}}>
           <h1>Department Information</h1>
           {isSuccess && (
-            <div>
+            <div style={{margin: "0 auto"}}>
               <Card style={{ width: '18rem' }}>
               <Card.Body>
                 <Card.Title>{departmentInfo.name}</Card.Title>

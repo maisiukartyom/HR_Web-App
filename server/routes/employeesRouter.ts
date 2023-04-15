@@ -7,7 +7,8 @@ import { addEmployee, addEmployeeRequestSchema,
     getEmployeeInfo,
     deleteEmployee,
     getDepEmployeeRequest,
-    getDepEmployees} from '../controllers/employeesController';
+    getDepEmployees,
+    getEmployeeInfoUser} from '../controllers/employeesController';
 import { deletionRequest, mutationResponse } from '../utils/commonSchemas';
 
 const t = initTRPC.create();
@@ -38,5 +39,10 @@ export const employeesRouter = router({
     getDepEmployees: publicProcedure
         .input(getDepEmployeeRequest)
         .output(getEmployeesResponseScheme)
-        .query(({input}) => getDepEmployees({input}))
+        .query(({input}) => getDepEmployees({input})),
+    getEmployeeInfoUser: publicProcedure
+        .input(getEmployeeRequest)
+        .output(getEmployeeResponse)
+        .query(({input}) => getEmployeeInfoUser({input}))
+    
 })

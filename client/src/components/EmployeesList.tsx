@@ -24,14 +24,12 @@ export const EmployeesList= ({employees, isLoading, refetch, depName}: any):JSX.
     const [newPosition, setNewPosition] = useState("");
     const [newDepartmentName, setNewDepartmentName] = useState("");
     const [newUsername, setNewUsername] = useState("");
-
-    //const {data: employees, isLoading} = trpc.getEmployeesInfo.useQuery({filter: true});
   
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(event.target.value);
     };
     
-    const filteredEmployees = employees?.filter((employee: Employee) =>
+    const filteredEmployees: Array<Employee> = employees?.filter((employee: Employee) =>
       `${employee.firstName} ${employee.lastName}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -51,7 +49,7 @@ export const EmployeesList= ({employees, isLoading, refetch, depName}: any):JSX.
       refetch();
     };
 
-    const handleDeleteDepartment = async (id: number) => {
+    const handleDeleteEmployee = async (id: number) => {
       await mutationDel.mutateAsync({id: id});
       refetch();
     }
@@ -85,13 +83,13 @@ export const EmployeesList= ({employees, isLoading, refetch, depName}: any):JSX.
           <tbody>
             {filteredEmployees?.map((employee: Employee) => (
               <tr key={employee.id}>
-                <Link to={`/employee/${employee.id}`}><td>{employee.firstName} {employee.lastName}</td></Link>
+                <td><Link to={`/employee/${employee.id}`}>{employee.firstName} {employee.lastName}</Link></td>
                 <td>{employee.company.name}</td>
                 <td>{employee.createdAt}</td>
                 <td>
                   <Button
                       variant="danger"
-                      onClick={() => handleDeleteDepartment(employee.id)}>
+                      onClick={() => handleDeleteEmployee(employee.id)}>
                       Delete
                     </Button>
                 </td>
@@ -99,6 +97,7 @@ export const EmployeesList= ({employees, isLoading, refetch, depName}: any):JSX.
             ))}
           </tbody>
         </Table>
+        {filteredEmployees.length=== 0 && <h3>No employees found!</h3>}
         <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
             <Modal.Header closeButton>
               <Modal.Title>Add Department</Modal.Title>

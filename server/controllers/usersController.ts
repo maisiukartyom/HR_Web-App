@@ -21,6 +21,7 @@ export const loginRequest = z.object({
 export const loginResponse = z.object({
   id: z.number(),
   username: z.string(),
+  isAdmin: z.boolean(),
 })
 
 export const addUser = async ({input}: {input: z.infer<typeof addUserRequestSchema>}) => {
@@ -70,9 +71,11 @@ export const Login = async ({input}: {input: z.infer<typeof loginRequest>}) => {
     select: {
       id: true, 
       username: true,
-      password: true
+      password: true,
+      isAdmin: true
     }
   });
+
 
   if (!user){
     throw new TRPCError({
@@ -89,9 +92,9 @@ export const Login = async ({input}: {input: z.infer<typeof loginRequest>}) => {
     })
   }
 
-
   return {
     id: user.id,
-    username: user.username
+    username: user.username,
+    isAdmin: user.isAdmin,
   };
 }

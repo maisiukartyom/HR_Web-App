@@ -14,11 +14,14 @@ import { Employee } from './pages/Employee';
 import { Login } from './pages/Login';
 import { UserContext } from './context/userContext';
 import { Register } from './pages/Register';
+import { Button } from 'react-bootstrap';
+import { AuthRequired } from './components/AuthRequiered';
+import { Profile } from './pages/Profile';
 
 
 const AppContent = () => {
 
-  const {user} = useContext(UserContext);
+  const {user, setUser} = useContext(UserContext);
 
   return (
     <>
@@ -31,19 +34,17 @@ const AppContent = () => {
                 <Nav.Link as={Link} to="/departments">Departments</Nav.Link>
                 <Nav.Link as={Link} to="/profile">Profile</Nav.Link>
                 <Nav.Link as={Link} to="/login">Login/Register</Nav.Link>
+                {user && <Button onClick={() => setUser(null)}>Logout</Button>}
               </Nav>
             </Container>
           </Navbar>
           <Routes>
-            { user &&
-              <>
-                <Route path='/' element={<Home />}/>
-                <Route path='/department/:id' element={<Department />}/>
-                <Route path='/departments' element={<Departments />}/>
-                <Route path='/employees' element={<Employees />}/>
-                <Route path='/employee/:id' element={<Employee />}/>
-              </>
-            }     
+                <Route path='/' element={user? <Home /> : <AuthRequired />}/>
+                <Route path='/department/:id' element={user? <Department/> : <AuthRequired />}/>
+                <Route path='/departments' element={user? <Departments/> : <AuthRequired />}/>
+                <Route path='/employees' element={user? <Employees/> : <AuthRequired />}/>
+                <Route path='/employee/:id' element={user? <Employee/> : <AuthRequired />}/>  
+                <Route path='/profile' element={user? <Profile/> : <AuthRequired />}/>  
                 <Route path='/login' element={<Login />}/>
                 <Route path='/register' element={<Register />}/>
           </Routes>

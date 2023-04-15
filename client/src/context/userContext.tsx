@@ -2,8 +2,9 @@ import React, { createContext, useState } from 'react';
 
 // Define the shape of the user data
 interface User {
-  id?: number;
-  username?: string;
+  id: number;
+  username: string;
+  isAdmin: boolean
 }
 
 // Create a new context for user data

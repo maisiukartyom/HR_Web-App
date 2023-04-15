@@ -7,25 +7,24 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 export const Login: React.FC = () => {
+    const {user, setUser} = useContext(UserContext);
+
     const [newUsername, setNewUsername] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    const mutationLogin = trpc.login.useMutation();
+    const mutationLogin = trpc.login.useMutation({onSuccess(data) {
+      setUser({
+        id: data.id,
+        username: data.username,
+        isAdmin: data.isAdmin
+      });
+      navigate("/");
+    },});
 
-    const {user, setUser} = useContext(UserContext);
+
     const navigate = useNavigate();
 
     const handleLogin = async () => {
         await mutationLogin.mutateAsync({username: newUsername, password: newPassword});
-        if (!mutationLogin.isError){
-            setUser({
-                id: mutationLogin.data?.id,
-                username: mutationLogin.data?.username
-            });
-            navigate("/");
-        }
-        else{
-
-        };
     }
 
     return (

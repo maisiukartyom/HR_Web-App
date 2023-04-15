@@ -181,7 +181,6 @@ export const getEmployeesInfo = async ({input}: {input: z.infer<typeof getInfoRe
 
 export const getEmployeeInfo = async ({input}: {input: z.infer<typeof getEmployeeRequest>}) => {
   const {id} = input;
-
   const employee = await prisma.employee.findUnique({
     where: {
       id: id
@@ -216,6 +215,46 @@ export const getEmployeeInfo = async ({input}: {input: z.infer<typeof getEmploye
     }
   };
 }
+
+export const getEmployeeInfoUser = async ({input}: {input: z.infer<typeof getEmployeeRequest>}) => {
+  const {id} = input;
+
+  const employee = await prisma.employee.findUnique({
+    where: {
+      userId: id
+    },
+    include: {
+      department: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!employee){
+    throw new TRPCError({
+      code: 'INTERNAL_SERVER_ERROR',
+      message: "Employee not found!"
+    })
+  };
+
+  return {
+    id: employee.id, 
+    firstName: employee.firstName, 
+    lastName: employee.lastName,
+    position: employee.position,
+    isHead: employee.isHead,
+    createdAt: String(employee.createdAt),
+    department: {
+      id: employee.department.id,
+      name: employee.department.name
+    }
+  };
+}
+
+
 
 export const deleteEmployee = async ({input}: {input: z.infer<typeof deletionRequest>}) => {
   const {id} = input;
