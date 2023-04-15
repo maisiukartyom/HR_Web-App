@@ -7,18 +7,24 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 export const Login: React.FC = () => {
-    const {user, setUser} = useContext(UserContext);
+    const {setUser} = useContext(UserContext);
 
     const [newUsername, setNewUsername] = useState("");
     const [newPassword, setNewPassword] = useState("");
-    const mutationLogin = trpc.login.useMutation({onSuccess(data) {
-      setUser({
-        id: data.id,
-        username: data.username,
-        isAdmin: data.isAdmin
-      });
-      navigate("/");
-    },});
+
+    const [isError, setIsError] = useState(false);
+    const mutationLogin = trpc.login.useMutation({
+      onSuccess(data) {
+        setUser({
+          id: data.id,
+          username: data.username,
+          isAdmin: data.isAdmin
+        });
+        navigate("/");},
+      onError() {
+        setIsError(true)
+      },
+    });
 
 
     const navigate = useNavigate();
@@ -46,6 +52,11 @@ export const Login: React.FC = () => {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}/>
                 </Form.Group>
+
+                {isError && 
+                  <div>
+                    <text style={{color: "red"}}>{mutationLogin.error?.message}</text>
+                  </div>}
                 <Button variant="primary" onClick={handleLogin}>
                   Sign In
                 </Button>

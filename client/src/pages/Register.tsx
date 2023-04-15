@@ -7,11 +7,16 @@ export const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const mutationReg = trpc.addUser.useMutation();
+  const [isError, setIsError] = useState(false);
+
+  const mutationReg = trpc.addUser.useMutation({
+    onError() {
+      setIsError(true)
+    },
+  });
   const navigate = useNavigate();
   
   const handleRegistration = async () => {
-    // Handle registration logic here
     await mutationReg.mutateAsync({
         username: username,
         password: password
@@ -49,7 +54,10 @@ export const Register: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </Form.Group>
-
+            {isError && 
+                <div>
+                  <text style={{color: "red"}}>{mutationReg.error?.message}</text>
+                </div>}
             <Button variant="primary" onClick={handleRegistration}>
               Register
             </Button>
